@@ -35,6 +35,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
@@ -192,7 +193,7 @@ public abstract class MidnightConfig {
         path = PlatformFunctions.getConfigDirectory().resolve(modid + ".json");
         try {
             if (!Files.exists(path)) Files.createFile(path);
-            Files.write(path, gson.toJson(getClass(modid)).getBytes());
+            Files.write(path, gson.toJson(getClass(modid)).getBytes(StandardCharsets.UTF_8));
         } catch (Exception e) {
             e.fillInStackTrace();
         }
@@ -266,7 +267,7 @@ public abstract class MidnightConfig {
             }
         }
         public void loadValues() {
-            try { gson.fromJson(Files.newBufferedReader(path), configClass.get(modid)); }
+            try { gson.fromJson(Files.newBufferedReader(path, StandardCharsets.UTF_8), configClass.get(modid)); }
             catch (Exception e) { write(modid); }
 
             for (EntryInfo info : entries) {
